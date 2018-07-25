@@ -41,9 +41,9 @@ function openDocument(path: string, scheme: string) {
  * @param  {string} scheme URI scheme that needs to support, optional
  * @return {Promise}
  */
-function openSupportedDocument(path: string, scheme: string, uti: string) {
+function openSupportedDocument(path: string, uti: string, scheme: string) {
   if (Platform.OS === 'ios')
-    return RNFetchBlob.openSupportedDocument('file://' + path, scheme, uti);
+    return RNFetchBlob.openSupportedDocument('file://' + path, uti, scheme);
   else
     return Promise.reject(
       'RNFetchBlob.openSupportedDocument only supports IOS.'

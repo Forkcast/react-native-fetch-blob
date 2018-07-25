@@ -556,7 +556,7 @@ RCT_EXPORT_METHOD(slice:(NSString *)src dest:(NSString *)dest start:(nonnull NSN
     [RNFetchBlobFS slice:src dest:dest start:start end:end encode:@"" resolver:resolve rejecter:reject];
 }
 
-RCT_EXPORT_METHOD(previewDocument:(NSString*)uri scheme:(NSString *)scheme resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+RCT_EXPORT_METHOD(previewDocument:(NSString*)uri scheme:(NSString *)scheme uti:(NSString *)uti resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
     NSString * utf8uri = [uri stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     NSURL * url = [[NSURL alloc] initWithString:utf8uri];
@@ -564,10 +564,13 @@ RCT_EXPORT_METHOD(previewDocument:(NSString*)uri scheme:(NSString *)scheme resol
     documentController = [UIDocumentInteractionController interactionControllerWithURL:url];
     UIViewController *rootCtrl = [[[[UIApplication sharedApplication] delegate] window] rootViewController];
     documentController.delegate = self;
+    if(uti != nil) {
+      documentController.UTI = uti;
+    }
     if(scheme == nil || [[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:scheme]]) {
       CGRect rect = CGRectMake(0.0, 0.0, 0.0, 0.0);
       dispatch_sync(dispatch_get_main_queue(), ^{
-          [documentController  presentOptionsMenuFromRect:rect inView:rootCtrl.view animated:YES];
+          [documentController  presentOpenInMenuFromRect:rect inView:rootCtrl.view animated:YES];
       });
         resolve(@[[NSNull null]]);
     } else {
@@ -580,12 +583,12 @@ RCT_EXPORT_METHOD(openSupportedDocument:(NSString*)uri scheme:(NSString *)scheme
     NSString * utf8uri = [uri stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     NSURL * url = [[NSURL alloc] initWithString:utf8uri];
     // NSURL * url = [[NSURL alloc] initWithString:uri];
+    documentController = [UIDocumentInteractionController interactionControllerWithURL:url];
     UIViewController *rootCtrl = [[[[UIApplication sharedApplication] delegate] window] rootViewController];
     documentController.delegate = self;
     if(uti != nil) {
       documentController.UTI = uti;
     }
-    documentController = [UIDocumentInteractionController interactionControllerWithURL:url];
     if(scheme == nil || [[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:scheme]]) {
       CGRect rect = CGRectMake(0.0, 0.0, 0.0, 0.0);
       dispatch_sync(dispatch_get_main_queue(), ^{
@@ -593,7 +596,7 @@ RCT_EXPORT_METHOD(openSupportedDocument:(NSString*)uri scheme:(NSString *)scheme
       });
         resolve(@[[NSNull null]]);
     } else {
-        reject(@"RNFetchBlob could not open document", @"scheme is not supported", nil);
+        reject(@"EINVAL", @"scheme is not supported", nil);
     }
 }
 
