@@ -36,7 +36,7 @@ function openDocument(path: string, scheme: string) {
 }
 
 /**
- * Preview a file using UIDocumentInteractionController
+ * Open a file in a supported app using UIDocumentInteractionController
  * @param  {string} path Path of the file to be open.
  * @param  {string} scheme URI scheme that needs to support, optional
  * @return {Promise}

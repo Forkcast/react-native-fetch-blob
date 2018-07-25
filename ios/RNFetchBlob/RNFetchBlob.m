@@ -578,6 +578,7 @@ RCT_EXPORT_METHOD(previewDocument:(NSString*)uri scheme:(NSString *)scheme uti:(
     }
 }
 
+# pragma mark - open file in a supported app with UIDocumentInteractionController and delegate
 RCT_EXPORT_METHOD(openSupportedDocument:(NSString*)uri scheme:(NSString *)scheme uti:(NSString *)uti resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
     NSString * utf8uri = [uri stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
