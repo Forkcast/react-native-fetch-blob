@@ -6,10 +6,10 @@ import {
   NativeModules,
   DeviceEventEmitter,
   Platform,
-  NativeAppEventEmitter,
-} from 'react-native'
+  NativeAppEventEmitter
+} from 'react-native';
 
-const RNFetchBlob:RNFetchBlobNative = NativeModules.RNFetchBlob
+const RNFetchBlob: RNFetchBlobNative = NativeModules.RNFetchBlob;
 
 /**
  * Open a file using UIDocumentInteractionController
@@ -17,11 +17,10 @@ const RNFetchBlob:RNFetchBlobNative = NativeModules.RNFetchBlob
  * @param  {string} scheme URI scheme that needs to support, optional
  * @return {Promise}
  */
-function previewDocument(path:string, scheme:string) {
-  if(Platform.OS === 'ios')
-    return RNFetchBlob.previewDocument('file://' + path, scheme)
-  else
-    return Promise.reject('RNFetchBlob.openDocument only supports IOS.')
+function previewDocument(path: string, scheme: string) {
+  if (Platform.OS === 'ios')
+    return RNFetchBlob.previewDocument('file://' + path, scheme);
+  else return Promise.reject('RNFetchBlob.openDocument only supports IOS.');
 }
 
 /**
@@ -30,11 +29,25 @@ function previewDocument(path:string, scheme:string) {
  * @param  {string} scheme URI scheme that needs to support, optional
  * @return {Promise}
  */
-function openDocument(path:string, scheme:string) {
-  if(Platform.OS === 'ios')
-    return RNFetchBlob.openDocument('file://' + path, scheme)
+function openDocument(path: string, scheme: string) {
+  if (Platform.OS === 'ios')
+    return RNFetchBlob.openDocument('file://' + path, scheme);
+  else return Promise.reject('RNFetchBlob.previewDocument only supports IOS.');
+}
+
+/**
+ * Preview a file using UIDocumentInteractionController
+ * @param  {string} path Path of the file to be open.
+ * @param  {string} scheme URI scheme that needs to support, optional
+ * @return {Promise}
+ */
+function openSupportedDocument(path: string, scheme: string, uti: string) {
+  if (Platform.OS === 'ios')
+    return RNFetchBlob.openSupportedDocument('file://' + path, scheme, uti);
   else
-    return Promise.reject('RNFetchBlob.previewDocument only supports IOS.')
+    return Promise.reject(
+      'RNFetchBlob.openSupportedDocument only supports IOS.'
+    );
 }
 
 /**
@@ -43,12 +56,13 @@ function openDocument(path:string, scheme:string) {
  * @param  {string} url URL of the resource, only file URL is supported
  * @return {Promise}
  */
-function excludeFromBackupKey(path:string) {
+function excludeFromBackupKey(path: string) {
   return RNFetchBlob.excludeFromBackupKey('file://' + path);
 }
 
 export default {
   openDocument,
   previewDocument,
+  openSupportedDocument,
   excludeFromBackupKey
-}
+};

@@ -575,6 +575,28 @@ RCT_EXPORT_METHOD(previewDocument:(NSString*)uri scheme:(NSString *)scheme resol
     }
 }
 
+RCT_EXPORT_METHOD(openSupportedDocument:(NSString*)uri scheme:(NSString *)scheme uti:(NSString *)uti resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+{
+    NSString * utf8uri = [uri stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    NSURL * url = [[NSURL alloc] initWithString:utf8uri];
+    // NSURL * url = [[NSURL alloc] initWithString:uri];
+    UIViewController *rootCtrl = [[[[UIApplication sharedApplication] delegate] window] rootViewController];
+    documentController.delegate = self;
+    if(uti != nil) {
+      documentController.UTI = uti;
+    }
+    documentController = [UIDocumentInteractionController interactionControllerWithURL:url];
+    if(scheme == nil || [[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:scheme]]) {
+      CGRect rect = CGRectMake(0.0, 0.0, 0.0, 0.0);
+      dispatch_sync(dispatch_get_main_queue(), ^{
+          [documentController  presentOpenInMenuFromRect:rect inView:rootCtrl.view animated:YES];
+      });
+        resolve(@[[NSNull null]]);
+    } else {
+        reject(@"RNFetchBlob could not open document", @"scheme is not supported", nil);
+    }
+}
+
 # pragma mark - open file with UIDocumentInteractionController and delegate
 
 RCT_EXPORT_METHOD(openDocument:(NSString*)uri scheme:(NSString *)scheme resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
