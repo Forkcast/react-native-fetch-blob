@@ -17,9 +17,9 @@ const RNFetchBlob: RNFetchBlobNative = NativeModules.RNFetchBlob;
  * @param  {string} scheme URI scheme that needs to support, optional
  * @return {Promise}
  */
-function previewDocument(path: string, scheme: string) {
+function previewDocument(path: string, scheme?: string, uti: string) {
   if (Platform.OS === 'ios')
-    return RNFetchBlob.previewDocument('file://' + path, scheme);
+    return RNFetchBlob.previewDocument('file://' + path, scheme, uti);
   else return Promise.reject('RNFetchBlob.openDocument only supports IOS.');
 }
 
